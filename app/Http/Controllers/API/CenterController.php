@@ -5,6 +5,8 @@ namespace App\Http\Controllers\API;
 use App\Center;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class CenterController extends Controller
 {
@@ -14,8 +16,10 @@ class CenterController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
-        //
+    {  
+        $centers = Center::all();
+
+        return response(["centers"=>$centers]);
     }
 
     /**
@@ -26,7 +30,22 @@ class CenterController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->all();
+
+        $validator = Validator::make($data, [
+            "name"=>"required|max:50"
+        ]);
+
+        if($validator->fails()){
+            return response([
+                "errors"=>$validator->errors(),
+                "Validation Error"
+            ]);
+        }
+
+        $center = Center::create($data);
+
+        return response()->json($center, 201);
     }
 
     /**
@@ -37,7 +56,7 @@ class CenterController extends Controller
      */
     public function show(Center $center)
     {
-        //
+        return $center;
     }
 
     /**
@@ -49,7 +68,11 @@ class CenterController extends Controller
      */
     public function update(Request $request, Center $center)
     {
-        //
+        $data = $request->all();
+
+        $center->update($data);
+
+        return response()->json($center, 201);
     }
 
     /**
@@ -60,6 +83,8 @@ class CenterController extends Controller
      */
     public function destroy(Center $center)
     {
-        //
+        $center->delete();
+
+        return response(["message" => "Center deleted successfully"]);
     }
 }

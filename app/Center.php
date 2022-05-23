@@ -6,8 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Center extends Model
 {
+    public $incrementing = false;
     protected $table = "centers";
-    protected $fillable = ["name", "granted", "kn_enabled", "io_granted"];
+    protected $fillable = ["id", "name"];
+    // protected $guarded = ["id"];
 
     protected $attributes = [
         'granted'=> '0',
